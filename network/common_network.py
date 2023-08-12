@@ -29,11 +29,11 @@ class MusicConvBlock(nn.Module):
 
 
 class RhythmConvBlock(nn.Module):
-    def __init__(self, input_channels, output_channels, kernel_size=5, padding=2):
+    def __init__(self, input_channels, output_channels, kernel_size=5, padding=2, stride=4):
         super(RhythmConvBlock, self).__init__()
 
         self.conv1d = nn.Conv1d(in_channels=input_channels, out_channels=output_channels, kernel_size=kernel_size,
-                                padding=padding)
+                                padding=padding, stride=stride)
 
         self.bn = nn.BatchNorm1d(output_channels, affine=True)
         self.elu = nn.ReLU(inplace=True)
