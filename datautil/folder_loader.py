@@ -69,7 +69,9 @@ def librosa_loader(path):
 
 def audio2logmelspectrogram(audio_data, sample_rate, n_mels=96, hop_length=160):
     mel_spectrogram = librosa.feature.melspectrogram(y=audio_data, sr=sample_rate, n_mels=n_mels, hop_length=hop_length)
-    log_mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max)
+    cut_spectrogram = mel_spectrogram[:, :200]
+    # log_mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max)
+    log_mel_spectrogram = librosa.power_to_db(cut_spectrogram, ref=np.max)
     return log_mel_spectrogram
 
 
@@ -120,7 +122,7 @@ if __name__ == '__main__':
     # choreo_folder = getfolder("ChoreoMaster_Dataset")
     # imgs = [item for item in choreo_folder]
 
-    choreo_dataset = MMDDataset(dataset="MMD", root_dir="ChoreoMaster_Dataset")
+    choreo_dataset = MMDDataset(dataset="MMD", root_dir="../ChoreoMaster_Dataset")
 
     a = choreo_dataset.__getitem__(0)
     b = choreo_dataset.__len__()

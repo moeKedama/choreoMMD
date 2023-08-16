@@ -52,6 +52,8 @@ if __name__ == '__main__':
         filename = _[2]
         waveform, sample_rate = torchaudio.load(filename)
         # resampler = torchaudio.transforms.Resample(orig_freq=16000, new_freq=output_sample_rate)
+
+        # mode1 全部重采样 人耳听着区别不大
         if waveform.size(1) != 0:
             test_rate = int(sample_rate ** 2 / (waveform.size(1) // 2))  # 有一点抽象的推导
             resampled_waveform = torchaudio.transforms.Resample(orig_freq=16000, new_freq=test_rate)(waveform)  # wip
@@ -63,5 +65,25 @@ if __name__ == '__main__':
         elif resampled_waveform.size(1) < target_num_samples:
             padding = target_num_samples - resampled_waveform.size(1)
             resampled_waveform = torch.nn.functional.pad(resampled_waveform, (0, padding))
+        print(resampled_waveform.size(1))
+
+        # mode2 低于2s进行padding,高于2s进行重采样
+        # if waveform.size(1) <= target_num_samples:
+        #     print("padding")
+        #     padding = target_num_samples - waveform.size(1)
+        #     resampled_waveform = torch.nn.functional.pad(waveform, (0, padding))
+        # else:
+        #     print("resample")
+        #     test_rate = int(sample_rate ** 2 / (waveform.size(1) // 2))  # 有一点抽象的推导
+        #     resampled_waveform = torchaudio.transforms.Resample(orig_freq=16000, new_freq=test_rate)(waveform)  # wip
+        #
+        #     if resampled_waveform.size(1) > target_num_samples:
+        #         print("cut")
+        #         resampled_waveform = resampled_waveform[:, :target_num_samples]
+        #     elif resampled_waveform.size(1) < target_num_samples:
+        #         print("resample padding 1")
+        #         padding = target_num_samples - resampled_waveform.size(1)
+        #         resampled_waveform = torch.nn.functional.pad(resampled_waveform, (0, padding))
+
         save_path = os.path.join("Processed_Dataset\\music_clip", filename.split("\\")[-1])
         torchaudio.save(filepath=save_path, src=resampled_waveform, sample_rate=test_rate)
